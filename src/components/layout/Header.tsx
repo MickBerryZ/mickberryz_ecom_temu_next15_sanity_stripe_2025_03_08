@@ -88,7 +88,7 @@ const Header = ({ user }: HeaderProps) => {
 
             <Link href="#" className="absolute left-1/2 -translate-x-1/2">
               <span className="text-xl sm:text-2xl font-bold tracking-tight">
-                DEAL
+                MickBerryZ Shop
               </span>
             </Link>
             <div className="flex flex-1 justify-end items-center gap-2 sm:gap-4">
