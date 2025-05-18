@@ -18,7 +18,8 @@ export const getAllProducts = async () => {
 };
 
 export const getAllCategories = async () => {
-  const query = `*[_type == "ProductCategory"]`;
+  const query = `*[_type == "productCategory"]`;
+  // const query = `*[_type == "ProductCategory"]`;
   const categories = await sanityFetch({ query: query });
   return categories.data as ProductCategory[];
 };

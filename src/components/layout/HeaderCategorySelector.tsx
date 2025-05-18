@@ -25,14 +25,15 @@ const HeaderCategorySelector = async () => {
         </svg>
       </button>
 
-      <div className="absolute top-full left-0 pt-2 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible transition-all duration">
+      <div className="absolute top-full left-0 pt-2 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible hover:opacity-100 hover:visible transition-all duration border-gray-200 rounded-lg shadow-lg">
+        {/* Dropdown menu */}
         <div className="w-64 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden">
           <div className="py-2">
             {categories.map((category) => (
               <Link
                 key={category._id}
                 href={`/category/${category.slug?.current}`}
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-100"
+                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition-colors duration-100"
                 prefetch
               >
                 {category.title}
@@ -44,4 +45,5 @@ const HeaderCategorySelector = async () => {
     </div>
   );
 };
+
 export default HeaderCategorySelector;
