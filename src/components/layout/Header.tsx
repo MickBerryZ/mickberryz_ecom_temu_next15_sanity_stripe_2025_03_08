@@ -5,7 +5,8 @@ import { User } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import HearderSearchBar from "./HearderSearchBar";
+import HearderSearchBar from "./HeaderSearchBar";
+import HeaderSearchBar from "./HeaderSearchBar";
 
 const AnnouncementBar = () => {
   return (
@@ -62,8 +63,12 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
         <AnnouncementBar />
 
         <div className="w-full flex justify-between items-center py-3 sm:py-4 bg-white/80 shadow-sm border-b border-gray-100 backdrop-blur-sm">
-          <div className="flex justify-between items-center container mx-auto px-8">
-            <div className="flex flex-1 justify-start items-center gap-4 sm:gap-6">
+          {/* 🔵 CHANGED container layout to flex 3 columns */}
+          {/* <div className="flex justify-between items-center container mx-auto px-8"> */}
+          <div className="container mx-auto px-4 sm:px-8 flex items-center justify-between">
+            {/* 🟢 LEFT SIDE */}
+            {/* <div className="flex items-center gap-4 sm:gap-6 flex-1"> */}
+            <div className="flex items-center gap-4 sm:gap-6 flex-1">
               <button className="text-gray-700 hover:text-gray-900 md:hidden">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -87,13 +92,24 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
               </nav>
             </div>
 
-            <Link href="#" className="absolute left-1/2 -translate-x-1/2">
+            {/* 🔴 REMOVED absolute logo */}
+            {/* 🟢 CENTER LOGO */}
+            {/* <Link href="#" className="absolute left-1/2 -translate-x-1/2">
               <span className="text-xl sm:text-2xl font-bold tracking-tight">
                 MickBerryZ Shop
               </span>
-            </Link>
+            </Link> */}
+            <div className="flex-1 flex justify-center">
+              <Link href="/">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight text-gray-800">
+                  MickBerryZ Shop
+                </span>
+              </Link>
+            </div>
+
+            {/* 🟢 RIGHT SIDE */}
             <div className="flex flex-1 justify-end items-center gap-2 sm:gap-4">
-              <HearderSearchBar />
+              <HeaderSearchBar />
 
               {user ? (
                 <div className="flex items-center gap-2 sm:gap-4">
@@ -144,7 +160,7 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   ></path>
                 </svg>
-                <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] sm:text-xs w-3 3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] sm:text-xs w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center">
                   0
                 </span>
               </button>

@@ -2,7 +2,7 @@
 import Form from "next/form";
 import React from "react";
 
-const HearderSearchBar = () => {
+const HeaderSearchBar = () => {
   return (
     <Form action="/search">
       <div className="relative">
@@ -32,4 +32,4 @@ const HearderSearchBar = () => {
   );
 };
 
-export default HearderSearchBar;
+export default HeaderSearchBar;
