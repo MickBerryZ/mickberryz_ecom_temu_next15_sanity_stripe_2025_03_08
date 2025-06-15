@@ -1,4 +1,5 @@
 import SalesCampaignBanner from "@/components/layout/SalesCampaignBanner";
+import AddToCartButton from "@/components/product/AddToCartButton";
 import { formatPrice } from "@/lib/utils";
 import { getProductById } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -116,6 +117,50 @@ const ProductPage = async ({ params }: { params: Promise<{ id: string }> }) => {
                     </span>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 bg-red-50 p-2 rounded-lg">
+                <span className="text-red-600 font-bold">🤑</span>
+                <span className="text-red-600 font-medium text-sm">
+                  You save {formatPrice(originalPrice - product.price)}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-gray-600">
+                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span className="text-xl">
+                  {Math.floor(Math.random() * 50) + 20}
+                </span>
+                <span>people bought in the last hour</span>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 p-4 rounded-xl mt-4">
+              <div className="flex items-center gap-2 text-yellow-800">
+                <span className="text-xl">🎵</span>
+                <span className="font-bold">Limited Time Offer!</span>
+              </div>
+              <div className="text-sm text-yellow-700 mt-1 font-medium">
+                Order now before price Changes!
+              </div>
+            </div>
+
+            <AddToCartButton />
+
+            <div className="flex flex-col gap-3 mt-6 text-sm bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3 text-gray-700">
+                <span className="bg-green-100 p-2 rounded-full">✅</span>
+                <span className="font-medium">
+                  In stock - Ships within 24 hours
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-700">
+                <span className="bg-green-100 p-2 rounded-full">🔄</span>
+                <span className="font-medium">30-day money-back guarantee</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-700">
+                <span className="bg-green-100 p-2 rounded-full">🛡️</span>
+                <span className="font-medium">Secure payment processing</span>
               </div>
             </div>
           </div>
