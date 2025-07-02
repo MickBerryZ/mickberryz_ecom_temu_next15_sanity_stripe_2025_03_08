@@ -145,7 +145,7 @@ const ProductPage = async ({ params }: { params: Promise<{ id: string }> }) => {
               </div>
             </div>
 
-            <AddToCartButton />
+            <AddToCartButton product={product} />
 
             <div className="flex flex-col gap-3 mt-6 text-sm bg-white p-4 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center gap-3 text-gray-700">
