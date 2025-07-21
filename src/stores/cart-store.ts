@@ -1,3 +1,5 @@
+import { updateCartItem } from "@/actions/cart-actions";
+import { idMatchesPerspective } from "sanity";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -37,7 +39,27 @@ export const useCartStore = create<CartStore>()(
 
       setStore: (store) => set(store),
 
-      addItem: async (item) => {},
+      addItem: async (item) => {
+        const { cartId } = get();
+        if (!cartId) {
+          return;
+        }
+
+        const updatedCart = await updateCartItem(cartId, item.id, {
+          title: item.title,
+          price: item.price,
+          image: item.image,
+          quantity: item.quantity,
+        });
+
+        set((state) => {
+          return {
+            ...state,
+            cartId: updatedCart.id,
+            items: [...state.items, item],
+          };
+        });
+      },
       removeItem: async (id) => {},
       updateQuantity: async (id, quantity) => {},
       syncWithUser: async () => {},
