@@ -1,4 +1,8 @@
-import { updateCartItem } from "@/actions/cart-actions";
+import {
+  getOrCreateCart,
+  syncCartWithUser,
+  updateCartItem,
+} from "@/actions/cart-actions";
 import { idMatchesPerspective } from "sanity";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -103,11 +107,29 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
+      // [Server Side] Function to get or create a cart
       syncWithUser: async () => {
         const { cartId } = get();
         if (!cartId) {
+          // If no cartId, create a new cart
+          const cart = await getOrCreateCart();
+          // [Client Side] Update the store state with the new cart
+          set((state) => ({
+            ...state,
+            cartId: cart.id,
+            items: cart.items,
+          }));
         }
-        // const syncedCart = await
+        // [Server Side] Sync the cart with the user
+        const syncedCart = await syncCartWithUser(cartId);
+        // [Client Side] Update the store state with the synced cart
+        if (syncedCart) {
+          set((state) => ({
+            ...state,
+            cartId: syncedCart.id,
+            items: syncedCart.items,
+          }));
+        }
       },
 
       clearCart: () => {
