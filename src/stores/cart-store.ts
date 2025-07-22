@@ -60,8 +60,30 @@ export const useCartStore = create<CartStore>()(
           };
         });
       },
-      removeItem: async (id) => {},
+
+      removeItem: async (id) => {
+        const { cartId } = get();
+        if (!cartId) {
+          return;
+        }
+
+        // [Server Side] Assuming updateCartItem can handle setting quantity to 0 to remove the item
+        const updatedCart = await updateCartItem(cartId, id, {
+          quantity: 0,
+        });
+
+        // [Client Side] Update the store state to remove the item
+        set((state) => {
+          return {
+            ...state,
+            cartId: updatedCart.id,
+            items: state.items.filter((item) => item.id !== id),
+          };
+        });
+      },
+
       updateQuantity: async (id, quantity) => {},
+
       syncWithUser: async () => {},
 
       clearCart: () => {
