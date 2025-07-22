@@ -44,23 +44,32 @@ export const useCartStore = create<CartStore>()(
       setStore: (store) => set(store),
 
       addItem: async (item) => {
-        const { cartId } = get();
+        const { cartId, items } = get();
         if (!cartId) {
           return;
         }
+
+        // [Server Side] Check if the item already exists in the cart
+        // If it exists, update the quantity, otherwise create a new item
+        const existingItem = items.find((i) => i.id === item.id);
+        const existingQuantity = existingItem ? existingItem.quantity : 0;
+
+        // [Server Side] Calculate the new quantity
+        // If the item already exists, increment the quantity
+        const addedItemQuantity = existingQuantity + item.quantity;
 
         const updatedCart = await updateCartItem(cartId, item.id, {
           title: item.title,
           price: item.price,
           image: item.image,
-          quantity: item.quantity,
+          quantity: addedItemQuantity,
         });
 
         set((state) => {
           return {
             ...state,
             cartId: updatedCart.id,
-            items: [...state.items, item],
+            items: [...state.items, { ...item, quantity: addedItemQuantity }],
           };
         });
       },

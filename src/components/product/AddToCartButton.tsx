@@ -1,21 +1,48 @@
 "use client";
 import { formatPrice } from "@/lib/utils";
 import { Product } from "@/sanity.types";
+import { urlFor } from "@/sanity/lib/image";
+import { useCartStore } from "@/stores/cart-store";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 type AddToCartButtonProps = {
   product: Product;
 };
 const AddToCartButton = ({ product }: AddToCartButtonProps) => {
+  // [Client Side] Get the addItem and open functions from the cart store
+  // [Client Side] Use shallow to avoid unnecessary re-renders
+  const { addItem, open } = useCartStore(
+    useShallow((state) => ({
+      addItem: state.addItem,
+      open: state.open,
+    }))
+  );
+
   const [isLoading, setLoading] = useState(false);
 
   const handleAddToCart = async () => {
+    // [Client Side] Validate product data before adding to cart
+    if (!product.title || product.price === undefined || !product.image) {
+      return;
+    }
+
     setLoading(true);
 
     // Add the tiem to the cart
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // [Client Side] Open the cart after adding the item
+    addItem({
+      id: product._id,
+      title: product.title,
+      price: product.price,
+      image: urlFor(product.image).url(),
+      quantity: 1,
+    });
     setLoading(false);
+    open();
   };
 
   if (!product.price) {
