@@ -103,7 +103,12 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      syncWithUser: async () => {},
+      syncWithUser: async () => {
+        const { cartId } = get();
+        if (!cartId) {
+        }
+        // const syncedCart = await
+      },
 
       clearCart: () => {
         set((state) => ({ ...state, items: [] }));

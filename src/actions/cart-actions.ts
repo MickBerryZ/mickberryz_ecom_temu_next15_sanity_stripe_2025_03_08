@@ -112,3 +112,119 @@ export const updateCartItem = async (
   revalidatePath("/");
   return getOrCreateCart(cartId);
 };
+
+export const syncCartWithUser = async (cartId: string | null) => {
+  const { user } = await getCurrentSession();
+
+  if (!user) {
+    return null;
+  }
+
+  const existingUserCart = await prisma.cart.findUnique({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      items: true,
+    },
+  });
+
+  // If the user already has a cart, return it
+  const existingAnonymousCart = cartId
+    ? await prisma.cart.findUnique({
+        where: {
+          id: cartId,
+        },
+        include: {
+          items: true,
+        },
+      })
+    : null;
+
+  // If the user has an existing cart, merge it with the anonymous cart
+  if (!cartId && existingUserCart) {
+    return existingUserCart;
+  }
+
+  // If the user has an existing anonymous cart, merge it with the user's cart
+  if (!cartId) {
+    // !cartId && !existingUserCart
+    return createCart();
+  }
+
+  // If the user has no existing cart, create a new one
+  if (!existingAnonymousCart && !existingUserCart) {
+    return createCart();
+  }
+
+  // If the user has an existing cart and it matches the anonymous cart, return it
+  if (existingUserCart && existingUserCart.id === cartId) {
+    return existingUserCart;
+  }
+
+  // If the user has an existing cart but it doesn't match the anonymous cart, merge them
+  if (!existingUserCart) {
+    const newCart = await prisma.cart.update({
+      where: {
+        id: cartId,
+      },
+      data: {
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        items: true,
+      },
+    });
+
+    return newCart;
+  }
+
+  if (!existingAnonymousCart) {
+    return existingUserCart;
+  }
+
+  for (const item of existingAnonymousCart.items) {
+    const existingItem = existingUserCart.items.find(
+      (item) => item.sanityProductId === item.sanityProductId
+    );
+
+    if (existingItem) {
+      // add two cart quantities together
+      await prisma.cartLineItem.update({
+        where: {
+          id: existingItem.id,
+        },
+        data: {
+          quantity: existingItem.quantity + item.quantity,
+        },
+      });
+    } else {
+      // add non-existing item to user cart
+      await prisma.cartLineItem.create({
+        data: {
+          id: crypto.randomUUID(),
+          cartId: existingUserCart.id,
+          sanityProductId: item.sanityProductId,
+          quantity: item.quantity,
+          title: item.title,
+          price: item.price,
+          image: item.image,
+        },
+      });
+    }
+  }
+
+  // Delete the anonymous cart after merging
+  await prisma.cart.delete({
+    where: {
+      id: cartId,
+    },
+  });
+
+  revalidatePath("/");
+  return getOrCreateCart(existingUserCart.id);
+};
