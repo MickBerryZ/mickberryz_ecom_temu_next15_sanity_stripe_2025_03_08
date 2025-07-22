@@ -82,7 +82,26 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      updateQuantity: async (id, quantity) => {},
+      updateQuantity: async (id, quantity) => {
+        const { cartId } = get();
+        if (!cartId) {
+          return;
+        }
+
+        // [Server Side] Update the item quantity in the cart
+        const updatedCart = await updateCartItem(cartId, id, {
+          quantity: quantity,
+        });
+
+        // [Client Side] Update the store state to remove the item
+        set((state) => {
+          return {
+            ...state,
+            cartId: updatedCart.id,
+            items: state.items.filter((item) => item.id !== id),
+          };
+        });
+      },
 
       syncWithUser: async () => {},
 
