@@ -12,6 +12,7 @@ import { useShallow } from "zustand/shallow";
 // This component is used to ensure the cart is ready before rendering the cart UI
 const Cart = () => {
   const {
+    removeItem,
     updateQuantity,
     items,
     close,
@@ -21,6 +22,7 @@ const Cart = () => {
     getTotalItems,
   } = useCartStore(
     useShallow((state) => ({
+      removeItem: state.removeItem,
       updateQuantity: state.updateQuantity,
       items: state.items,
       close: state.close,
@@ -130,7 +132,23 @@ const Cart = () => {
                           onChange={(e) =>
                             updateQuantity(item.id, Number(e.target.value))
                           }
-                        ></select>
+                          className="border rounded-md px-2 py-1 text-sm bg-white"
+                        >
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                            <option
+                              key={`cart-qty-slct-${item.id}-${num}`}
+                              value={num}
+                            >
+                              {num}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          className="text-red-500 text-sm hover:text-red-600"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   </div>
