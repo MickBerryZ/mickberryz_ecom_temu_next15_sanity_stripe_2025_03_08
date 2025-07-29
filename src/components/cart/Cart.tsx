@@ -1,5 +1,6 @@
 "use client";
 
+import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
 import { ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
@@ -10,17 +11,25 @@ import { useShallow } from "zustand/shallow";
 // Cart component to initialize the cart store and sync with user data
 // This component is used to ensure the cart is ready before rendering the cart UI
 const Cart = () => {
-  const { items, close, isOpen, syncWithUser, setLoaded, getTotalItems } =
-    useCartStore(
-      useShallow((state) => ({
-        items: state.items,
-        close: state.close,
-        isOpen: state.isOpen,
-        syncWithUser: state.syncWithUser,
-        setLoaded: state.setLoaded,
-        getTotalItems: state.getTotalItems,
-      }))
-    );
+  const {
+    updateQuantity,
+    items,
+    close,
+    isOpen,
+    syncWithUser,
+    setLoaded,
+    getTotalItems,
+  } = useCartStore(
+    useShallow((state) => ({
+      updateQuantity: state.updateQuantity,
+      items: state.items,
+      close: state.close,
+      isOpen: state.isOpen,
+      syncWithUser: state.syncWithUser,
+      setLoaded: state.setLoaded,
+      getTotalItems: state.getTotalItems,
+    }))
+  );
 
   // [Client Side] Use useEffect to sync the cart with user data when the component mounts
   useEffect(() => {
@@ -109,7 +118,20 @@ const Cart = () => {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3></h3>
+                      <h3 className="font-medium text-gray-900 truncate">
+                        {item.title}
+                      </h3>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {formatPrice(item.price)}
+                      </div>
+                      <div className="flex items-center gap-3 mt-2">
+                        <select
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateQuantity(item.id, Number(e.target.value))
+                          }
+                        ></select>
+                      </div>
                     </div>
                   </div>
                 ))}
