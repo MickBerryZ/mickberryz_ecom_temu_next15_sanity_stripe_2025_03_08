@@ -107,13 +107,13 @@ export const useCartStore = create<CartStore>()(
         });
 
         // [Client Side] Update the store state to remove the item
-        set((state) => {
-          return {
-            ...state,
-            cartId: updatedCart.id,
-            items: state.items.filter((item) => item.id !== id),
-          };
-        });
+        set((state) => ({
+          ...state,
+          cartId: updatedCart.id,
+          items: state.items.map((item) =>
+            item.id === id ? { ...item, quantity } : item
+          ),
+        }));
       },
 
       // [Server Side] Function to get or create a cart

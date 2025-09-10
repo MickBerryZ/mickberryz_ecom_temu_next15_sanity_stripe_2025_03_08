@@ -5,8 +5,10 @@ import { useCartStore } from "@/stores/cart-store";
 import { ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/shallow";
+
+const freeShippingAmount = 10; // Set £10 for free shipping
 
 // Cart component to initialize the cart store and sync with user data
 // This component is used to ensure the cart is ready before rendering the cart UI
@@ -19,6 +21,7 @@ const Cart = () => {
     isOpen,
     syncWithUser,
     setLoaded,
+    getTotalPrice,
     getTotalItems,
   } = useCartStore(
     useShallow((state) => ({
@@ -29,6 +32,7 @@ const Cart = () => {
       isOpen: state.isOpen,
       syncWithUser: state.syncWithUser,
       setLoaded: state.setLoaded,
+      getTotalPrice: state.getTotalPrice,
       getTotalItems: state.getTotalItems,
     }))
   );
@@ -45,6 +49,14 @@ const Cart = () => {
     // This ensures the cart is ready before any cart-related UI is rendered
     initCart();
   }, []);
+
+  const totalPrice = useMemo(() => {
+    return getTotalPrice();
+  }, [getTotalPrice]);
+
+  const remainingForFreeShipping = useMemo(() => {
+    return Math.max(0, freeShippingAmount - totalPrice); // it doesn't be negative
+  }, [totalPrice]);
   return (
     <>
       {/* Backdrop */}
@@ -157,6 +169,33 @@ const Cart = () => {
             )}
           </div>
           {/* Cart Footer */}
+          {items.length > 0 && (
+            <div className="border-t">
+              {/* Shipping progress */}
+              {remainingForFreeShipping > 0 ? (
+                <div className="p-4 bg-blue-50 border-b">
+                  <div className="flex items-center gap-2 text-blue-800 mb-2">
+                    <span>🔥</span>
+                    <span className="font-medium">
+                      Add {formatPrice(remainingForFreeShipping)} more for FREE
+                      shipping!
+                    </span>
+                  </div>
+                  <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{
+                        width: `${Math.min(100, (totalPrice / freeShippingAmount) * 100)}%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              ) : (
+                <div></div>
+              )}
+              {/* Order summary & checkout */}
+            </div>
+          )}
         </div>
       </div>
     </>
