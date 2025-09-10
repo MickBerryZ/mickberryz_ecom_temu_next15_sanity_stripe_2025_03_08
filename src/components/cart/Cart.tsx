@@ -50,9 +50,8 @@ const Cart = () => {
     initCart();
   }, []);
 
-  const totalPrice = useMemo(() => {
-    return getTotalPrice();
-  }, [getTotalPrice]);
+  const totalPrice = getTotalPrice();
+  // Calculate the remaining amount for free shipping
 
   const remainingForFreeShipping = useMemo(() => {
     return Math.max(0, freeShippingAmount - totalPrice); // it doesn't be negative
