@@ -194,12 +194,57 @@ const Cart = () => {
                   <div className="flex items-center gap2 text-green-800">
                     <span>😍</span>
                     <span className="font-medium">
-                      You have Unlocked 🔓 for FREE shipping!
+                      You have Unlocked 🔓 FREE shipping!
                     </span>
                   </div>
                 </div>
               )}
+
               {/* Order summary & checkout */}
+              <div className="p-4 space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Subtotal</span>
+                    <span className="font-medium">
+                      {formatPrice(totalPrice)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500">Shipping</span>
+                    <span className="font-medium">
+                      {remainingForFreeShipping > 0
+                        ? "Calculated at checkout"
+                        : "Free"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font">Total</span>
+                    <span>{formatPrice(totalPrice)}</span>
+                  </div>
+
+                  <button className="w-full bg-black text-white py-4 rounded-full font-bold hover:bg-gray-900 transition-colors flex items-center justify-center">
+                    Proceed to Checkout
+                  </button>
+
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span>🔒</span>
+                      <span>Secure checkout</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span>🔄</span>
+                      <span>30-day returns</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span>💵💰💳</span>
+                      <span>All major payment method accepted</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
