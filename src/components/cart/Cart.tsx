@@ -8,7 +8,7 @@ import Link from "next/link";
 import React, { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/shallow";
 
-const freeShippingAmount = 10; // Set £10 for free shipping
+const freeShippingAmount = 30; // Set for free shipping
 
 // Cart component to initialize the cart store and sync with user data
 // This component is used to ensure the cart is ready before rendering the cart UI
@@ -174,7 +174,7 @@ const Cart = () => {
               {remainingForFreeShipping > 0 ? (
                 <div className="p-4 bg-blue-50 border-b">
                   <div className="flex items-center gap-2 text-blue-800 mb-2">
-                    <span>🔥</span>
+                    <span>🚚</span>
                     <span className="font-medium">
                       Add {formatPrice(remainingForFreeShipping)} more for FREE
                       shipping!
@@ -190,7 +190,14 @@ const Cart = () => {
                   </div>
                 </div>
               ) : (
-                <div></div>
+                <div className="p-4 bg-green-50 border-b">
+                  <div className="flex items-center gap2 text-green-800">
+                    <span>😍</span>
+                    <span className="font-medium">
+                      You have Unlocked 🔓 for FREE shipping!
+                    </span>
+                  </div>
+                </div>
               )}
               {/* Order summary & checkout */}
             </div>
