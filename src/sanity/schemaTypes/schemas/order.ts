@@ -120,11 +120,6 @@ export const order = defineType({
       type: "number",
     }),
     defineField({
-      name: "totalPrice",
-      title: "Total Price (GBP)",
-      type: "number",
-    }),
-    defineField({
       name: "shippingAddress",
       title: "Shipping Address",
       type: "shippingAddress",
