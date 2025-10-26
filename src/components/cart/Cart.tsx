@@ -1,11 +1,14 @@
 "use client";
 
+import { getCurrentSession } from "@/actions/auth";
+import { getOrCreateCart } from "@/actions/cart-actions";
+import { createCheckoutSession } from "@/actions/stripe-actions";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
-import { ShoppingCart, X } from "lucide-react";
+import { Loader2, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 const freeShippingAmount = 30; // Set for free shipping
@@ -14,6 +17,7 @@ const freeShippingAmount = 30; // Set for free shipping
 // This component is used to ensure the cart is ready before rendering the cart UI
 const Cart = () => {
   const {
+    cartId,
     removeItem,
     updateQuantity,
     items,
@@ -25,6 +29,7 @@ const Cart = () => {
     getTotalItems,
   } = useCartStore(
     useShallow((state) => ({
+      cartId: state.cartId,
       removeItem: state.removeItem,
       updateQuantity: state.updateQuantity,
       items: state.items,
@@ -50,9 +55,18 @@ const Cart = () => {
     initCart();
   }, []);
 
-  // const handleProceedToCheckout = async () => {
-  //   const
-  // }
+  const [loadingProceed, setLoadingProceed] = useState<boolean>(false);
+  const handleProceedToCheckout = async () => {
+    if (!cartId || loadingProceed) {
+      return;
+    }
+    setLoadingProceed(true);
+
+    const checkoutUrl = await createCheckoutSession(cartId);
+    window.location.href = checkoutUrl;
+
+    setLoadingProceed(false);
+  };
 
   const totalPrice = getTotalPrice();
   // Calculate the remaining amount for free shipping
@@ -232,8 +246,16 @@ const Cart = () => {
                   <button
                     className="w-full bg-black text-white py-4 rounded-full font-bold hover:bg-gray-900 transition-colors flex items-center justify-center"
                     onClick={handleProceedToCheckout}
+                    disabled={loadingProceed}
                   >
-                    Proceed to Checkout
+                    {loadingProceed ? (
+                      <div className="flex items-center gap-1">
+                        Navigating to checkout....
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      </div>
+                    ) : (
+                      "Proceed to Checkout"
+                    )}
                   </button>
 
                   <div className="mt-4 space-y-2">

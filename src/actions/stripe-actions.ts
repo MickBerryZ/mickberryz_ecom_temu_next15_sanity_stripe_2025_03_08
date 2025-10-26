@@ -5,24 +5,29 @@ import { getCurrentSession } from "./auth";
 import { getOrCreateCart } from "./cart-actions";
 import { Currency } from "lucide-react";
 
+// Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-12-18",
+  apiVersion: "2024-12-18.acacia",
   //   apiVersion: "2025-09-30.clover",
 });
 
+// Create a checkout session
 export const createCheckoutSession = async (cardId: string) => {
   const { user } = await getCurrentSession();
   const cart = await getOrCreateCart(cardId);
 
+  // Ensure cart has items before creating a checkout session
   if (cart.items.length === 0) {
     throw new Error("Cart is empty");
   }
 
+  // Calculate total price of the cart items
   const totalPrice = cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
+  // Create Stripe checkout session
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     line_items: cart.items.map((item) => ({
@@ -32,6 +37,7 @@ export const createCheckoutSession = async (cardId: string) => {
           name: item.title,
           images: [item.image],
         },
+
         unit_amount: Math.round(item.price * 100), // 100.5 (£1.005)
       },
       quantity: item.quantity,
