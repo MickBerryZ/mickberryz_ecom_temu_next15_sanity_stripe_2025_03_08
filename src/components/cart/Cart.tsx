@@ -50,6 +50,10 @@ const Cart = () => {
     initCart();
   }, []);
 
+  // const handleProceedToCheckout = async () => {
+  //   const
+  // }
+
   const totalPrice = getTotalPrice();
   // Calculate the remaining amount for free shipping
 
@@ -225,7 +229,10 @@ const Cart = () => {
                     <span>{formatPrice(totalPrice)}</span>
                   </div>
 
-                  <button className="w-full bg-black text-white py-4 rounded-full font-bold hover:bg-gray-900 transition-colors flex items-center justify-center">
+                  <button
+                    className="w-full bg-black text-white py-4 rounded-full font-bold hover:bg-gray-900 transition-colors flex items-center justify-center"
+                    onClick={handleProceedToCheckout}
+                  >
                     Proceed to Checkout
                   </button>
 
