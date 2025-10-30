@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    darkMode: ["class"], // allows toggling dark mode via .dark class
     content: [
         "./src/app/**/*.{js,ts,jsx,tsx}",
         "./src/components/**/*.{js,ts,jsx,tsx}",
@@ -7,18 +8,28 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                background: "hsl(0, 0%, 100%)",
-                foreground: "hsl(0, 0%, 3.9%)",
-                primary: "hsl(0, 0%, 9%)",
-                secondary: "hsl(0, 0%, 96.1%)",
-                muted: "hsl(0, 0%, 96.1%)",
-                accent: "hsl(0, 0%, 96.1%)",
-                destructive: "hsl(0, 84.2%, 60.2%)",
-                border: "hsl(0, 0%, 89.8%)",
-                input: "hsl(0, 0%, 89.8%)",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                card: "hsl(var(--card))",
+                "card-foreground": "hsl(var(--card-foreground))",
+                popover: "hsl(var(--popover))",
+                "popover-foreground": "hsl(var(--popover-foreground))",
+                primary: "hsl(var(--primary))",
+                "primary-foreground": "hsl(var(--primary-foreground))",
+                secondary: "hsl(var(--secondary))",
+                "secondary-foreground": "hsl(var(--secondary-foreground))",
+                muted: "hsl(var(--muted))",
+                "muted-foreground": "hsl(var(--muted-foreground))",
+                accent: "hsl(var(--accent))",
+                "accent-foreground": "hsl(var(--accent-foreground))",
+                destructive: "hsl(var(--destructive))",
+                "destructive-foreground": "hsl(var(--destructive-foreground))",
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
             },
             borderRadius: {
-                DEFAULT: "0.5rem",
+                DEFAULT: "var(--radius)",
             },
         },
     },
