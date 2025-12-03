@@ -94,11 +94,11 @@ const Cart = () => {
       >
         <div className="flex flex-col h-full">
           {/* Cart Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+          <div className="flex items-center justify-between p-4 border-b bg-gray-800">
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5 " />
-              <h2 className="text-lg font-semibold">Shopping Cart</h2>
-              <span className="bg-gray-300 px-2 py-1 rounded-full text-md font-medium">
+              <ShoppingCart className="w-5 h-5  " />
+              <h2 className="text-lg font-semibold ">Shopping Cart</h2>
+              <span className="bg-gray-600 px-2 py-1 rounded-full text-md font-medium">
                 {getTotalItems()}
               </span>
             </div>
