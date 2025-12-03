@@ -5,7 +5,7 @@ import React from "react";
 const SalesCampaignBanner = () => {
   const router = useRouter();
   return (
-    <div className="w-full bg-gradient-to-r from-red-600 via-orange-500 to-red-600 py-3 relative overflow-hidden">
+    <div className="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 py-3 relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-white">
           <div className="flex items-center gap-2">

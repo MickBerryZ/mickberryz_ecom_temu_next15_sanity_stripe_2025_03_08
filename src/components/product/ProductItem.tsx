@@ -53,7 +53,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
           </div>
           <Link
             href={`/product/${product._id}`}
-            className="w-full text-center bg-gradient-to-r from-red-500 to-orange-500 text-white py-2 rounded-full text-sm font-bold hover:brightness-120 transition-all"
+            className="w-full text-center bg-gradient-to-r from-indigo-500 to-cyan-500 text-white py-2 rounded-full text-sm font-bold hover:brightness-120 transition-all"
           >
             GRAB IT NOW!
           </Link>
