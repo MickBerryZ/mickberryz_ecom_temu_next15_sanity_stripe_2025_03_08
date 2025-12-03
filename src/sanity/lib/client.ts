@@ -1,8 +1,7 @@
-import { createClient } from "next-sanity";
-
-import { apiVersion, dataset, projectId } from "../env";
 import { sanityFetch } from "@/sanity/lib/live";
 import { Product, ProductCategory } from "@/sanity.types";
+import { createClient } from "next-sanity";
+import { apiVersion, dataset, projectId } from "../env";
 
 export const client = createClient({
   projectId,
@@ -43,10 +42,10 @@ export const getProductById = async (id: string) => {
 
 export const searchProducts = async (searchQuery: string) => {
   const query = `*[_type == "product" && (
-  title match "*" + $searchQuery + "*" ||
-  despcription match "*" + $searchQuery + "*" ||
-  category->title match "*" + $searchQuery + "*" ||
-  category->slug.current match "*" + $searchQuery + "*"
+    title match "*" + $searchQuery + "*" ||
+    description match "*" + $searchQuery + "*" ||
+    category->title match "*" + $searchQuery + "*" ||
+    category->slug.current match "*" + $searchQuery + "*"
   )]`;
 
   const products = await sanityFetch({ query: query, params: { searchQuery } });

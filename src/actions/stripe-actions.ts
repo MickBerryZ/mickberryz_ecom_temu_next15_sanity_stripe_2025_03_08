@@ -7,8 +7,8 @@ import { Currency } from "lucide-react";
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-12-18.acacia",
-  //   apiVersion: "2025-09-30.clover",
+  // apiVersion: "2024-12-18.acacia",
+  apiVersion: "2025-02-24.acacia",
 });
 
 // Create a checkout session
@@ -42,7 +42,7 @@ export const createCheckoutSession = async (cardId: string) => {
       },
       quantity: item.quantity,
     })),
-    // sussess_url and cancel_url
+    // success_url and cancel_url
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL!}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL!}`,
     customer_email: user?.email,
