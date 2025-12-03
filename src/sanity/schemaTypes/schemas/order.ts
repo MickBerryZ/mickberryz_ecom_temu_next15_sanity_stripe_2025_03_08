@@ -25,13 +25,11 @@ export const shippingAddress = defineType({
       title: "City",
       type: "string",
     }),
-
     defineField({
       name: "state",
       title: "State",
       type: "string",
     }),
-
     defineField({
       name: "postalCode",
       title: "Postal Code",
