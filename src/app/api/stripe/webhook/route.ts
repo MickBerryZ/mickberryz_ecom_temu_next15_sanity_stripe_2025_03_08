@@ -13,14 +13,6 @@ export const dynamic = "force-dynamic";
 // 2. Prevent caching layers from interfering with the webhook
 export const fetchCache = "force-no-store";
 
-// 3. CRITICAL: Disable Next.js's default body parser.
-// This allows the raw request body to be read for Stripe signature verification.
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     // apiVersion: "2024-12-18.acacia",

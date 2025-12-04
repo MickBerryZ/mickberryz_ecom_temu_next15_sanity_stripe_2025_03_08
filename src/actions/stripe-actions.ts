@@ -13,9 +13,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 // Create a checkout session
-export const createCheckoutSession = async (cardId: string) => {
+export const createCheckoutSession = async (cartId: string) => {
+  // 1. Log the Input
+  console.log("--- Checkout Session Started ---");
+  console.log("Input cartId:", cartId);
+
   const { user } = await getCurrentSession();
-  const cart = await getOrCreateCart(cardId);
+  const cart = await getOrCreateCart(cartId);
 
   // Ensure cart has items before creating a checkout session
   if (cart.items.length === 0) {
