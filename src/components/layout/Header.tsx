@@ -141,13 +141,13 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
                 <React.Fragment>
                   <Link
                     href="/auth/sign-in"
-                    className="text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 border border-blue-500 rounded-md hover:bg-gray-50 hover:text-black transition-colors"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/sign-up"
-                    className="text-xs sm:text-sm font-medium text-gray-700 hover:text-gray-900"
+                    className="hidden sm:block px-4 py-2 text-sm font-medium text-white bg-rose-500 border border-rose-600 rounded-md hover:bg-rose-700 transition-colors"
                   >
                     Sign Up
                   </Link>
