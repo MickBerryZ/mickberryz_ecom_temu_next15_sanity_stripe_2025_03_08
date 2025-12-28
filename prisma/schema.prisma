@@ -32,7 +32,7 @@ model Session {
 }
 
 model CartLineItem {
-  id String @id
+  id String @id @default(cuid())
   sanityProductId String
   quantity Int
 
@@ -47,7 +47,7 @@ model CartLineItem {
 
 
 model Cart {
-  id String @id
+  id String @id @default(cuid())
   
   userId Int? @unique
   user User? @relation(references: [id], fields: [userId], onDelete: Cascade)
