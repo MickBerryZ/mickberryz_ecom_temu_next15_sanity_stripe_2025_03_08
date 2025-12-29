@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
+import prisma from "@/lib/prisma"; // Make sure this path points to your prisma client
+import { getCurrentSession } from "@/actions/auth";
 
 const getCheckoutSession = async (sessionId: string) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -25,6 +27,25 @@ const CheckOutSuccessPage = async ({
   if (!session) {
     redirect("/");
   }
+
+  // ----------------------------------------------------------------
+  // 👇 NEW LOGIC: Clear Cart if Payment is Successful
+  // ----------------------------------------------------------------
+  if (session.payment_status === "paid") {
+    // 1. Get the current logged-in user
+    const { user } = await getCurrentSession();
+
+    if (user) {
+      await prisma.cartLineItem.deleteMany({
+        where: {
+          cart: {
+            userId: user.id,
+          },
+        },
+      });
+    }
+  }
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="max-w-md w-full mx-auto p-6">
