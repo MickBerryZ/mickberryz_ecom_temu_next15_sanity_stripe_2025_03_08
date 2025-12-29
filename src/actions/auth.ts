@@ -5,6 +5,7 @@ import {
 } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 
+import { compare, hash } from "bcryptjs";
 import type { User, Session } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
@@ -126,14 +127,29 @@ export const getCurrentSession = cache(
   }
 );
 
-/* User register, login, logout */
+/*
+// Simple SHA-256 based password hashing (not recommended for production)
 export const hashPassword = async (password: string) => {
   return encodeHexLowerCase(sha256(new TextEncoder().encode(password)));
 };
-
 export const verifyPassword = async (password: string, hash: string) => {
   const passwordHash = await hashPassword(password);
   return passwordHash === hash;
+};
+*/
+
+/* User register, login, logout */
+export const hashPassword = async (password: string) => {
+  // 12 is the "salt rounds" (work factor) - standard for security
+  return await hash(password, 12);
+};
+
+export const verifyPassword = async (
+  password: string,
+  hashedPassword: string
+) => {
+  // bcrypt checks if the password matches the hash
+  return await compare(password, hashedPassword);
 };
 
 export const registerUser = async (email: string, password: string) => {
@@ -155,7 +171,7 @@ export const registerUser = async (email: string, password: string) => {
       user: safeUser,
       error: null,
     };
-  } catch (e) {
+  } catch {
     return {
       user: null,
       error: "Failed to register user",
