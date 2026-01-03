@@ -79,7 +79,8 @@
 
 @layer utilities {
   .border-border {
-    border: 1px solid hsl(var(--border));
+    /* border: 1px solid hsl(var(--border)); */
+    border-color: hsl(var(--border));
   }
 }
 
