@@ -62,8 +62,29 @@ const getSliceStyle = (length: number, index: number): React.CSSProperties => {
   };
 };
 
-const getTextStyle = () => {
-  return {};
+const getTextStyle = (): React.CSSProperties => {
+  const midAngle = 0;
+  const radian = midAngle * Math.PI;
+
+  const radius = 35;
+  const x = Math.cos(radian) * radius - 20; // Adjust for text width
+  const y = Math.sin(radian) * radius - 5; // Adjust for text height
+
+  return {
+    position: "absolute",
+    width: "200px",
+    height: "80px",
+    wordWrap: "break-word",
+    left: `calc(50% + ${x}%)`,
+    top: `calc(50% + ${y}%)`,
+    color: "white",
+    fontSize: "12px",
+    fontWeight: "bold",
+    textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+    whiteSpace: "wrap",
+    display: "flex",
+    flexDirection: "column",
+  };
 };
 
 const PriceTag = ({ price }: { price: number }) => {
@@ -99,20 +120,21 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
     }
   });
 
+  const handleSpin = () => {};
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>Open</DialogTrigger>
       {/* Added bg-white so the card is solid, not transparent */}
       <DialogContent className="sm:max-w-[800px] p-0">
-        <DialogTitle className="sr-only">
-          Spin & Win
-          <div className="p-6 text-center relative overflow-hidden">
+        <DialogTitle>
+          <div className="p-6 text-center relative overflow-hidden bg-orange-200">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse" />
             <h2 className="text-2xl font-bold mb-2 animate-bounce">
               Spin & Win! 🎁
             </h2>
             <p className="text-muted-foreground mb-4 relative animate-pulse">
-              Try your luck! Spin the wheel for a chance to win exciting prizes!
+              Try your luck! Spin the wheel for a chance to win amazing prizes!
             </p>
             <div className="absolute -left-10 top-1/2 h-8 w-40 bg-white/20 rotate-45 animate-[shine_2s_infinite]" />
           </div>
@@ -121,7 +143,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
         <div className="flex flex-col items-center justify-center p-8 gap-4 bg-gray-50">
           <div
             className={`relative w-[350px] h-[350px] md:w-[600px] md:h-[600px] transition-all duration-1000 ease-in-out transform 
-                ${showWinningItem ? "scale-0 opacity-0 rotate-180" : "scale-100 opacaty-100"}`}
+                ${showWinningItem ? "scale-0 opacity-0 rotate-180" : "scale-100 opacity-100"}`}
           >
             {/* Red pointer */}
             <div
@@ -164,6 +186,60 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
               ))}
             </div>
           </div>
+
+          <button
+            onClick={handleSpin}
+            disabled={isSpinning || hasSpun}
+            className={`relative px-8 py-4 rounded-full font-bold text-white text-lg transition-all 
+              bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 
+              bg-[length:200%_100%] animate-[gradient-x_2s_linear_infinite] 
+              border-4 border-yellow-300
+              shadow-[0_0_20px_rgba(234,179,8,0.5)]
+              hover:shadow-[0_0_30px_rgba(234,179,8,0.8)]
+              hover:scale-105
+              disabled:opacity-50 disabled:cursor-not-allowed 
+              ${showWinningItem ? "opacity-0 scale-0 -translate-y-full" : ""}
+              before:absolute before:inset-0 before:bg-white/20 before:animate-[pulse_1s_ease-in-out_infinite] 
+              `}
+          >
+            {isSpinning ? (
+              <span className="inline-flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Spinning...
+              </span>
+            ) : hasSpun ? (
+              "🎉 Congratulations! 🎉"
+            ) : (
+              <>
+                <span className="animate-[pulse_1s_ease-in-out_infinite]">
+                  🎁
+                </span>{" "}
+                {" SPIN NOW!"}
+                <span className="animate-[pulse_1s_ease-in-out_infinite]">
+                  🎁
+                </span>
+              </>
+            )}
+          </button>
         </div>
       </DialogContent>
     </Dialog>
