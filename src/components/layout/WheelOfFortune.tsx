@@ -163,9 +163,9 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>Open</DialogTrigger>
       {/* Added bg-white so the card is solid, not transparent */}
-      <DialogContent className="sm:max-w-[800px] p-0 max-h-[90vh] overflow-y-auto bg-white">
+      <DialogContent className="sm:max-w-[800px] p-0 h-auto overflow-hidden bg-white gap-0 border-0">
         <DialogTitle>
-          <div className="p-6 text-center relative overflow-hidden bg-orange-200">
+          <div className="p-6 text-center relative overflow-hidden bg-orange-200 rounded-t-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse" />
             <h2 className="text-2xl font-bold mb-2 animate-bounce">
               Spin & Win! 🎁
@@ -177,9 +177,9 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
           </div>
         </DialogTitle>
 
-        <div className="flex flex-col items-center justify-center p-8 gap-4 bg-gray-50">
+        <div className="flex flex-col items-center justify-center px-8 pb-8 pt-0 gap-4 bg-gray-50">
           <div
-            className={`relative w-[350px] h-[350px] md:w-[600px] md:h-[600px] transition-all duration-1000 ease-in-out transform 
+            className={`relative w-[300px] h-[300px] md:w-[380px] md:h-[380px] transition-all duration-1000 ease-in-out transform 
                 ${showWinningItem ? "scale-0 opacity-0 rotate-180" : "scale-100 opacity-100"}`}
           >
             {/* Red pointer */}
