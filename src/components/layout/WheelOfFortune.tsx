@@ -120,13 +120,50 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
     }
   });
 
-  const handleSpin = () => {};
+  const handleSpin = () => {
+    if (isSpinning || hasSpun) {
+      return;
+    }
+
+    setIsSpinning(true);
+    setHasSpun(true);
+    setShowWinningItem(false);
+
+    setWheelStyle({ animation: "none" });
+
+    requestAnimationFrame(() => {
+      const numberOfSpins = 5; // Number of full spins before landing on the winning item
+      const degreesPerProduct = 360 / products.length;
+      const spinToIndex = winningIndex;
+      const randomOffset = degreesPerProduct * (0.2 + Math.random() * 0.6);
+
+      const degrees =
+        numberOfSpins * 360 +
+        spinToIndex * degreesPerProduct -
+        randomOffset +
+        45;
+
+      setWheelStyle({
+        transform: `rotate(-${degrees}deg)`,
+        transition: "transform 4s cubic-bezier(0.17, 0.67, 0.08, 0.99)",
+        animation: "none",
+      });
+
+      setTimeout(() => {
+        setIsSpinning(false);
+
+        setTimeout(() => {
+          setShowWinningItem(true);
+        }, 500);
+      }, 4000);
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>Open</DialogTrigger>
       {/* Added bg-white so the card is solid, not transparent */}
-      <DialogContent className="sm:max-w-[800px] p-0">
+      <DialogContent className="sm:max-w-[800px] p-0 max-h-[90vh] overflow-y-auto bg-white">
         <DialogTitle>
           <div className="p-6 text-center relative overflow-hidden bg-orange-200">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse" />
