@@ -182,3 +182,14 @@
   0% { background-position: 0% 50%;}
   100% { background-position: 200% 50%;}
 }
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -10,6 +10,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Product } from "@/sanity.types";
+import { useShallow } from "zustand/shallow";
+import { addWinningItemToCart } from "@/actions/cart-actions";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "@/stores/cart-store";
 
 const COLORS = [
   ["#dc2626", "#ef4444"], // red gradient (deeper)
@@ -87,6 +91,82 @@ const getTextStyle = (): React.CSSProperties => {
   };
 };
 
+const WinningItem = ({
+  product,
+  onClose,
+}: {
+  product: Product;
+  onClose: () => void;
+}) => {
+  const router = useRouter();
+  const { setStore, open: openCart } = useCartStore(
+    useShallow((state) => ({
+      cartId: state.cartId,
+      setStore: state.setStore,
+      open: state.open,
+    })),
+  );
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (!cartId) {
+      return;
+    }
+    setIsAdding(true);
+
+    const updatedCart = await addWinningItemToCart(product);
+    setStore(updatedCart);
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    router.refresh();
+    openCart();
+    onClose();
+
+    setIsAdding(false);
+  };
+  return (
+    <div className="text-center animate-[slideUp_0.5s_ease-out] w-full max-w-sm mx-auto">
+      <div
+        className={`
+          p-8 rounded-xl bg-white shadow-2xl 
+          backdrop-blur-lg bg-opacity-90
+          border border-white/20
+          transform transition-all duration-500
+          hover:shadow-emerald-500/20 hover:scale-[1.01]
+      `}
+      >
+        <div className="relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-sky-500/10 animate-pulse rounded-lg" />
+          <h3
+            className={`
+                text-2xl font-bold text-emerald-600 whitespace-nowrap p-4 mb-8
+                animate-[pulse_2s_ease-in-out_infinite]
+                [text-shadow:_0_1px_2px_rgb(0_0_0_/_10%)]
+          `}
+          >
+            🎉 Congratulation 🎉
+          </h3>
+
+          <div className="flex flex-col items-center gap-6">
+            {product.image && (
+              <div className="relative group">
+                {/* Sparkle Effects */}
+                <div
+                  className={`
+                      absolute -inset-4 
+                      bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500
+                      rounded-2xl opacity-75 blur-lg animate-pulse 
+                      group-hover:opacity-100 transitionduration-500 `}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const PriceTag = ({ price }: { price: number }) => {
   return (
     <div className="flex items-center">
@@ -140,8 +220,8 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
       const degrees =
         numberOfSpins * 360 +
         spinToIndex * degreesPerProduct -
-        randomOffset +
-        45;
+        degreesPerProduct / 2 +
+        randomOffset;
 
       setWheelStyle({
         transform: `rotate(-${degrees}deg)`,
@@ -173,7 +253,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
             <p className="text-muted-foreground mb-4 relative animate-pulse">
               Try your luck! Spin the wheel for a chance to win amazing prizes!
             </p>
-            <div className="absolute -left-10 top-1/2 h-8 w-40 bg-white/20 rotate-45 animate-[shine_2s_infinite]" />
+            <div className="absolute -left-10 top-1/3 h-8 w-40 bg-white/20 rotate-45 animate-[shine_2s_infinite]" />
           </div>
         </DialogTitle>
 
@@ -222,6 +302,19 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div
+            className={`absolute inset-0 flex items-center justify-center p-8 
+            transition-all duration-1000 ease-in-out transform
+            ${!showWinningItem ? "scale-0 opacity-0 translate-y-full" : "scale-100 opacity-100 translate-y-0"}`}
+          >
+            {hasSpun && !isSpinning && (
+              <WinningItem
+                product={products[winningIndex]}
+                onClose={() => setIsOpen(false)}
+              />
+            )}
           </div>
 
           <button
