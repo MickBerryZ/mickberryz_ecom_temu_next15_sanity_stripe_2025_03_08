@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
     ],
+    // Add this to stop Next from blocking the Sanity CDN locally
+    dangerouslyAllowSVG: true,
+  },
+  experimental: {
+    // This stops the Next.js local private IP blocking
+    restrictImagePrivateIp: false,
   },
 };
 export default nextConfig;

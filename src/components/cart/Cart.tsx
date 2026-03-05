@@ -1,10 +1,13 @@
 "use client";
 
-import { getCurrentSession } from "@/actions/auth";
-import { getOrCreateCart } from "@/actions/cart-actions";
+// import { getCurrentSession } from "@/actions/auth";
+// import { getOrCreateCart } from "@/actions/cart-actions";
 import { createCheckoutSession } from "@/actions/stripe-actions";
 import { formatPrice } from "@/lib/utils";
-import { useCartStore } from "@/stores/cart-store";
+import {
+  useCartStore,
+  type CartItem as CartItemType,
+} from "@/stores/cart-store";
 import { Loader2, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +15,78 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 const freeShippingAmount = 30; // Set for free shipping
+
+const CartItem = ({ item }: { item: CartItemType }) => {
+  const { removeItem, updateQuantity } = useCartStore(
+    useShallow((state) => ({
+      removeItem: state.removeItem,
+      updateQuantity: state.updateQuantity,
+    })),
+  );
+
+  const isFreeItem = item.price === 0;
+
+  return (
+    <div
+      key={`cart-item-${item.id}`}
+      className="flex gap-4 p-4 hover:bg-gray-50"
+    >
+      <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border">
+        {/* Only render the Image if item.image is a real string, not empty! */}
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt={item.title || "Product Image"}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <span className="text-gray-400 text-center px-1">No Image</span>
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <h3 className="font-medium text-gray-900 truncate">{item.title}</h3>
+        <div className="text-sm text-gray-500 mt-1">
+          {isFreeItem ? (
+            <span className="text-green-600 font-semibold">Free</span>
+          ) : (
+            formatPrice(item.price)
+          )}
+        </div>
+        <div className="flex items-center gap-3 mt-2">
+          {isFreeItem ? (
+            <div className="text-sm text-emerald-600 font-medium">
+              Prize Item
+            </div>
+          ) : (
+            <>
+              <select
+                value={item.quantity}
+                onChange={(e) =>
+                  updateQuantity(item.id, Number(e.target.value))
+                }
+                className="border rounded-md px-2 py-1 text-sm bg-white"
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  <option key={`cart-qty-slct-${item.id}-${num}`} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => removeItem(item.id)}
+                className="text-red-500 text-sm hover:text-red-600"
+              >
+                Remove
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Cart component to initialize the cart store and sync with user data
 // This component is used to ensure the cart is ready before rendering the cart UI
@@ -39,7 +114,7 @@ const Cart = () => {
       setLoaded: state.setLoaded,
       getTotalPrice: state.getTotalPrice,
       getTotalItems: state.getTotalItems,
-    }))
+    })),
   );
 
   // [Client Side] Use useEffect to sync the cart with user data when the component mounts
@@ -124,7 +199,7 @@ const Cart = () => {
                   Your cart is emply
                 </h3>
                 <p className="text-gray-500 mb-6">
-                  Looks like you haven't added anything to your cart yet.
+                  Looks like you can not added anything to your cart yet.
                 </p>
                 <Link
                   href="/"
@@ -137,52 +212,7 @@ const Cart = () => {
             ) : (
               <div className="divide-y">
                 {items.map((item) => (
-                  <div
-                    key={`cart-item-${item.id}`}
-                    className="flex gap-4 p-4 hover:bg-gray-50"
-                  >
-                    <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">
-                        {item.title}
-                      </h3>
-                      <div className="text-sm text-gray-500 mt-1">
-                        {formatPrice(item.price)}
-                      </div>
-                      <div className="flex items-center gap-3 mt-2">
-                        <select
-                          value={item.quantity}
-                          onChange={(e) =>
-                            updateQuantity(item.id, Number(e.target.value))
-                          }
-                          className="border rounded-md px-2 py-1 text-sm bg-white"
-                        >
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                            <option
-                              key={`cart-qty-slct-${item.id}-${num}`}
-                              value={num}
-                            >
-                              {num}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-red-500 text-sm hover:text-red-600"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  <CartItem key={"cart-item-" + item.id} item={item} />
                 ))}
               </div>
             )}
