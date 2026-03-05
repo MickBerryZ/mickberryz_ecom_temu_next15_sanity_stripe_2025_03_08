@@ -10,10 +10,8 @@ const nextConfig: NextConfig = {
     ],
     // Add this to stop Next from blocking the Sanity CDN locally
     dangerouslyAllowSVG: true,
-  },
-  experimental: {
-    // This stops the Next.js local private IP blocking
-    restrictImagePrivateIp: false,
+    // Add this to stop Next.js from blocking the Sanity CDN locally
+    dangerouslyAllowLocalIP: true,
   },
 };
 export default nextConfig;
