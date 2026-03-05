@@ -2,6 +2,8 @@
 
 import { getCurrentSession } from "@/actions/auth";
 import prisma from "@/lib/prisma";
+import { Product } from "@/sanity.types";
+import { urlFor } from "@/sanity/lib/image";
 import { revalidatePath } from "next/cache";
 
 export const createCart = async () => {
@@ -189,7 +191,7 @@ export const syncCartWithUser = async (cartId: string | null) => {
 
   for (const item of existingAnonymousCart.items) {
     const existingItem = existingUserCart.items.find(
-      (item) => item.sanityProductId === item.sanityProductId,
+      (userItem) => userItem.sanityProductId === item.sanityProductId,
     );
 
     if (existingItem) {
@@ -235,7 +237,7 @@ export const addWinningItemToCart = async (
 ) => {
   const cart = await getOrCreateCart(cartId);
 
-  const updatedCart = await updateCartItem(cart.id, product_id, {
+  const updatedCart = await updateCartItem(cart.id, product._id, {
     title: `🎁${product.title} (Won)`,
     price: 0,
     image: product.image ? urlFor(product.image).url() : "",

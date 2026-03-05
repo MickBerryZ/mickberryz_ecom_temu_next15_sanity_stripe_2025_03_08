@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
+  // DialogDescription,
+  // DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/stores/cart-store";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
+import { Loader2, ShoppingCart } from "lucide-react";
 
 const COLORS = [
   ["#dc2626", "#ef4444"], // red gradient (deeper)
@@ -101,7 +102,12 @@ const WinningItem = ({
   onClose: () => void;
 }) => {
   const router = useRouter();
-  const { setStore, open: openCart } = useCartStore(
+
+  const {
+    cartId,
+    setStore,
+    open: openCart,
+  } = useCartStore(
     useShallow((state) => ({
       cartId: state.cartId,
       setStore: state.setStore,
@@ -116,7 +122,9 @@ const WinningItem = ({
     }
     setIsAdding(true);
 
-    const updatedCart = await addWinningItemToCart(product);
+    const updatedCart = await addWinningItemToCart(cartId, product);
+    localStorage.setItem("has-played-wheel-of-fortune", "true");
+
     setStore(updatedCart);
 
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -201,6 +209,31 @@ const WinningItem = ({
             </div>
           </div>
         </div>
+
+        <button
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className={`
+        mt-6 w-full py-4 px-8 rounded-full font-bold
+        transition-all duration-300 transform
+        flex items-center justify-center gap-2
+        hover:scale-105 active:scale-95
+        disabled:opacity-50 disabled:cursor-not-allowed
+        bg-gradient-to-r from-emerald-500 to-emerald-600 text-white
+        `}
+        >
+          {isAdding ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Adding to Cart...
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-5 h-5" />
+              Claim Your Prize!
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
