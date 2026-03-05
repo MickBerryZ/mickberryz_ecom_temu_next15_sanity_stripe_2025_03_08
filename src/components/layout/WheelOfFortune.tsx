@@ -14,6 +14,8 @@ import { useShallow } from "zustand/shallow";
 import { addWinningItemToCart } from "@/actions/cart-actions";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/stores/cart-store";
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
 
 const COLORS = [
   ["#dc2626", "#ef4444"], // red gradient (deeper)
@@ -158,8 +160,45 @@ const WinningItem = ({
                       rounded-2xl opacity-75 blur-lg animate-pulse 
                       group-hover:opacity-100 transitionduration-500 `}
                 />
+
+                {/* Main product content */}
+                <div className="relative bg-gradient-to-br from-white to-gray-50 p-4 rounded-xl shadow-2xl">
+                  {/* Price tag */}
+                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-4 py-1 rounded-full font-black text-lg shadow-lg z-10">
+                    FREE!
+                  </div>
+
+                  {/* Product Image */}
+                  <div className="relative rounded-lg overflow-hidden border-2 border-yellow-400/50 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                    <Image
+                      src={urlFor(product.image).width(256).url()}
+                      alt={product.title || "Winning Product"}
+                      className="object-cover transform transition-all duration-500 group-hover:scale-105"
+                      width={256}
+                      height={256}
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-tr from-yellow-400/20 to-transparent" />
+
+                    <div className="absolute bottom-2 left-2 bg-yellow-500/90 text-white text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm">
+                      Limited Time Only!
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
+
+            <div className="text-center space-y-2">
+              <h4 className="text-xl font-bold text-gray-800">You won:</h4>
+              <p className="text-lg text-emerald-600 font-semibold">
+                {product.title}
+              </p>
+              {product.description && (
+                <p className="text-sm text-muted-foreground">
+                  {product.description}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
