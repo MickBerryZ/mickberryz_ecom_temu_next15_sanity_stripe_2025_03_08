@@ -117,12 +117,12 @@ const WinningItem = ({
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async () => {
-    if (!cartId) {
-      return;
-    }
     setIsAdding(true);
 
-    const updatedCart = await addWinningItemToCart(cartId, product);
+    // Pass the existing cartId, OR an empty string to force the backend to make a new cart!
+    const currentCartId = cartId || "";
+    const updatedCart = await addWinningItemToCart(currentCartId, product);
+
     localStorage.setItem("has-played-wheel-of-fortune", "true");
 
     setStore(updatedCart);
@@ -135,60 +135,55 @@ const WinningItem = ({
     setIsAdding(false);
   };
   return (
-    <div className="text-center animate-[slideUp_0.5s_ease-out] w-full max-w-sm mx-auto">
+    // 1. Made the wrapper flexible with px-2 for mobile and centered with mx-auto
+    <div className="text-center animate-[slideUp_0.5s_ease-out] w-full px-2 sm:px-0 max-w-[320px] sm:max-w-sm mx-auto">
       <div
         className={`
-          p-8 rounded-xl bg-white shadow-2xl 
-          backdrop-blur-lg bg-opacity-90
-          border border-white/20
-          transform transition-all duration-500
-          hover:shadow-emerald-500/20 hover:scale-[1.01]
+          p-5 sm:p-8 rounded-xl bg-white shadow-2xl 
+          backdrop-blur-lg bg-opacity-90 border border-white/20
+          transform transition-all duration-500 hover:shadow-emerald-500/20 hover:scale-[1.01]
       `}
       >
         <div className="relative z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-sky-500/10 animate-pulse rounded-lg" />
           <h3
             className={`
-                text-2xl font-bold text-emerald-600 whitespace-nowrap p-4 mb-8
-                animate-[pulse_2s_ease-in-out_infinite]
-                [text-shadow:_0_1px_2px_rgb(0_0_0_/_10%)]
-          `}
+                text-xl sm:text-2xl font-bold text-emerald-600 whitespace-nowrap p-3 sm:p-4 mb-4 sm:mb-8
+                animate-[pulse_2s_ease-in-out_infinite] [text-shadow:_0_1px_2px_rgb(0_0_0_/_10%)]`}
           >
             🎉 Congratulation 🎉
           </h3>
 
-          <div className="flex flex-col items-center gap-6">
+          <div className="flex flex-col items-center gap-4 sm:gap-6">
             {product.image && (
               <div className="relative group">
                 {/* Sparkle Effects */}
                 <div
                   className={`
-                      absolute -inset-4 
-                      bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500
-                      rounded-2xl opacity-75 blur-lg animate-pulse 
-                      group-hover:opacity-100 transitionduration-500 `}
+                      absolute -inset-4 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500
+                      rounded-2xl opacity-75 blur-lg animate-pulse group-hover:opacity-100 transition duration-500`}
                 />
 
                 {/* Main product content */}
-                <div className="relative bg-gradient-to-br from-white to-gray-50 p-4 rounded-xl shadow-2xl">
+                <div className="relative bg-gradient-to-br from-white to-gray-50 p-3 sm:p-4 rounded-xl shadow-2xl">
                   {/* Price tag */}
-                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-4 py-1 rounded-full font-black text-lg shadow-lg z-10">
+                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1 rounded-full font-black text-sm sm:text-lg shadow-lg z-10">
                     FREE!
                   </div>
 
                   {/* Product Image */}
                   <div className="relative rounded-lg overflow-hidden border-2 border-yellow-400/50 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
                     <Image
-                      src={urlFor(product.image).width(256).url()}
+                      src={urlFor(product.image).width(160).url()}
                       alt={product.title || "Winning Product"}
                       className="object-cover transform transition-all duration-500 group-hover:scale-105"
-                      width={256}
-                      height={256}
+                      width={160}
+                      height={160}
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-tr from-yellow-400/20 to-transparent" />
 
-                    <div className="absolute bottom-2 left-2 bg-yellow-500/90 text-white text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm">
+                    <div className="absolute bottom-2 left-2 bg-yellow-500/90 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full backdrop-blur-sm">
                       Limited Time Only!
                     </div>
                   </div>
@@ -196,9 +191,11 @@ const WinningItem = ({
               </div>
             )}
 
-            <div className="text-center space-y-2">
-              <h4 className="text-xl font-bold text-gray-800">You won:</h4>
-              <p className="text-lg text-emerald-600 font-semibold">
+            <div className="text-center space-y-1 sm:space-y-2 mt-2">
+              <h4 className="text-lg sm:text-xl font-bold text-gray-800">
+                You won:
+              </h4>
+              <p className="text-base sm:text-lg text-emerald-600 font-semibold leading-tight">
                 {product.title}
               </p>
               {product.description && (
@@ -214,22 +211,19 @@ const WinningItem = ({
           onClick={handleAddToCart}
           disabled={isAdding}
           className={`
-        mt-6 w-full py-4 px-8 rounded-full font-bold
-        transition-all duration-300 transform
-        flex items-center justify-center gap-2
-        hover:scale-105 active:scale-95
-        disabled:opacity-50 disabled:cursor-not-allowed
-        bg-gradient-to-r from-emerald-500 to-emerald-600 text-white
-        `}
+        mt-5 sm:mt-6 w-full py-3 sm:py-4 px-6 sm:px-8 rounded-full font-bold text-sm sm:text-base
+            transition-all duration-300 transform flex items-center justify-center gap-2
+            hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
+            bg-gradient-to-r from-emerald-500 to-emerald-600 text-white`}
         >
           {isAdding ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               Adding to Cart...
             </>
           ) : (
             <>
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
               Claim Your Prize!
             </>
           )}
@@ -314,12 +308,13 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger>Open</DialogTrigger>
+
       {/* Added bg-white so the card is solid, not transparent */}
-      <DialogContent className="sm:max-w-[800px] p-0 h-auto overflow-hidden bg-white gap-0 border-0">
+      <DialogContent className="w-[95vw] sm:max-w-[800px] p-0 h-auto overflow-hidden rounded-2xl bg-white gap-0 border-0 shadow-2xl">
         <DialogTitle>
-          <div className="p-6 text-center relative overflow-hidden bg-orange-200 rounded-t-lg">
+          <div className="p-3 sm:p-4 text-center relative overflow-hidden bg-orange-200 rounded-t-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse" />
-            <h2 className="text-2xl font-bold mb-2 animate-bounce">
+            <h2 className="text-lg sm:text-xl font-bold mb-1 animate-bounce">
               Spin & Win! 🎁
             </h2>
             <p className="text-muted-foreground mb-4 relative animate-pulse">
@@ -329,10 +324,10 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
           </div>
         </DialogTitle>
 
-        <div className="flex flex-col items-center justify-center px-8 pb-8 pt-0 gap-4 bg-gray-50">
+        <div className="flex flex-col items-center justify-center px-4 py-8 sm:py-10 gap-8 bg-gray-50 relative">
           <div
-            className={`relative w-[300px] h-[300px] md:w-[380px] md:h-[380px] transition-all duration-1000 ease-in-out transform 
-                ${showWinningItem ? "scale-0 opacity-0 rotate-180" : "scale-100 opacity-100"}`}
+            className={`w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] transition-all duration-1000 ease-in-out transform 
+                ${showWinningItem ? "absolute scale-0 opacity-0 rotate-180" : "relative scale-100 opacity-100"}`}
           >
             {/* Red pointer */}
             <div
@@ -377,9 +372,9 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
           </div>
 
           <div
-            className={`absolute inset-0 flex items-center justify-center p-8 
+            className={`flex items-center justify-center
             transition-all duration-1000 ease-in-out transform
-            ${!showWinningItem ? "scale-0 opacity-0 translate-y-full" : "scale-100 opacity-100 translate-y-0"}`}
+            ${!showWinningItem ? "absolute inset-0 scale-0 opacity-0 translate-y-full pointer-events-none z-0" : "relative w-full scale-100 opacity-100 translate-y-0 z-50"}`}
           >
             {hasSpun && !isSpinning && (
               <WinningItem
