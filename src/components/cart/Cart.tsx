@@ -3,6 +3,7 @@
 // import { getCurrentSession } from "@/actions/auth";
 // import { getOrCreateCart } from "@/actions/cart-actions";
 import { createCheckoutSession } from "@/actions/stripe-actions";
+import { updateCartItem } from "@/actions/cart-actions";
 import { formatPrice } from "@/lib/utils";
 import {
   useCartStore,
@@ -16,7 +17,14 @@ import { useShallow } from "zustand/shallow";
 
 const freeShippingAmount = 30; // Set for free shipping
 
-const CartItem = ({ item }: { item: CartItemType }) => {
+// 1. Add cartId to the props!
+const CartItem = ({
+  item,
+  cartId,
+}: {
+  item: CartItemType;
+  cartId: string | null;
+}) => {
   const { removeItem, updateQuantity } = useCartStore(
     useShallow((state) => ({
       removeItem: state.removeItem,
@@ -25,6 +33,22 @@ const CartItem = ({ item }: { item: CartItemType }) => {
   );
 
   const isFreeItem = item.price === 0;
+
+  // 2. Create a handler that removes from UI AND Database
+  const handleRemove = async () => {
+    removeItem(item.id); // Instantly hide it on the screen
+    if (cartId) {
+      await updateCartItem(cartId, item.id, { quantity: 0 }); // Tell the database to delete it
+    }
+  };
+
+  // 3. Create a handler that updates quantity in UI AND Database
+  const handleQuantityChange = async (newQuantity: number) => {
+    updateQuantity(item.id, newQuantity); // Instantly update UI
+    if (cartId) {
+      await updateCartItem(cartId, item.id, { quantity: newQuantity }); // Tell the database
+    }
+  };
 
   return (
     <div
@@ -60,9 +84,10 @@ const CartItem = ({ item }: { item: CartItemType }) => {
               <div className="text-sm text-emerald-600 font-medium">
                 Prize Item
               </div>
-              {/* Added the remove button for free items! */}
+
+              {/* 4. Added the remove button for free items! */}
               <button
-                onClick={() => removeItem(item.id)}
+                onClick={handleRemove}
                 className="text-red-500 text-sm hover:text-red-600 ml-2"
               >
                 Remove
@@ -70,11 +95,10 @@ const CartItem = ({ item }: { item: CartItemType }) => {
             </>
           ) : (
             <>
+              {/* 5. Use your new handleQuantityChange function! */}
               <select
                 value={item.quantity}
-                onChange={(e) =>
-                  updateQuantity(item.id, Number(e.target.value))
-                }
+                onChange={(e) => handleQuantityChange(Number(e.target.value))}
                 className="border rounded-md px-2 py-1 text-sm bg-white"
               >
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -83,8 +107,10 @@ const CartItem = ({ item }: { item: CartItemType }) => {
                   </option>
                 ))}
               </select>
+
+              {/* 6. Use your new handleRemove function here too! */}
               <button
-                onClick={() => removeItem(item.id)}
+                onClick={handleRemove}
                 className="text-red-500 text-sm hover:text-red-600"
               >
                 Remove
@@ -221,7 +247,11 @@ const Cart = () => {
             ) : (
               <div className="divide-y">
                 {items.map((item) => (
-                  <CartItem key={"cart-item-" + item.id} item={item} />
+                  <CartItem
+                    key={"cart-item-" + item.id}
+                    item={item}
+                    cartId={cartId}
+                  />
                 ))}
               </div>
             )}

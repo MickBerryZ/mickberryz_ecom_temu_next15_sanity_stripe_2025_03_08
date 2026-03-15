@@ -236,7 +236,7 @@ const WinningItem = ({
           disabled={isAdding}
           className="mt-4 w-full text-center text-sm font-medium text-gray-400 hover:text-gray-600 underline decoration-gray-300 hover:decoration-gray-500 transition-colors disabled:opacity-50"
         >
-          No thanks, I'll pass
+          No thanks, I will pass
         </button>
       </div>
     </div>
@@ -247,7 +247,7 @@ const PriceTag = ({ price }: { price: number }) => {
   return (
     <div className="flex items-center">
       <span className="text-white text-base font-extrabold drop-shadow-lg [text-shadow:_-2px_-2px_0_#22c55e,_2px_-2px_0_#22c55e,-2px_2px_0_#22c55e,_2px_2px_0_#22c55e]">
-        ${price.toFixed(2)}
+        £{price.toFixed(2)}
       </span>
     </div>
   );

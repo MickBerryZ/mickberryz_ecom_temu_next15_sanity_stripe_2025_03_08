@@ -29,7 +29,7 @@ export const createCheckoutSession = async (cartId: string) => {
   // Calculate total price of the cart items
   const totalPrice = cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
   // Create Stripe checkout session
@@ -39,8 +39,8 @@ export const createCheckoutSession = async (cartId: string) => {
       price_data: {
         currency: "gbp",
         product_data: {
-          name: item.title,
-          images: [item.image],
+          name: item.title?.trim() || "Mystery Prize",
+          images: item.image ? [item.image] : [],
         },
 
         unit_amount: Math.round(item.price * 100), // 100.5 (£1.005)
