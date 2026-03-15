@@ -13,11 +13,12 @@ type AddToCartButtonProps = {
 const AddToCartButton = ({ product }: AddToCartButtonProps) => {
   // [Client Side] Get the addItem and open functions from the cart store
   // [Client Side] Use shallow to avoid unnecessary re-renders
-  const { addItem, open } = useCartStore(
+  const { cartId, addItem, open } = useCartStore(
     useShallow((state) => ({
+      cartId: state.cartId,
       addItem: state.addItem,
       open: state.open,
-    }))
+    })),
   );
 
   const [isLoading, setLoading] = useState(false);
@@ -41,6 +42,24 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       image: urlFor(product.image).url(),
       quantity: 1,
     });
+
+    try {
+      const anyWindow = window as any;
+
+      if (anyWindow.umami) {
+        anyWindow.umami.track("add_to_cart", {
+          cartId: cartId,
+          productId: product._id,
+          productName: product.title,
+          price: product.price,
+          currency: "GBP",
+        });
+      }
+    } catch (error) {
+      console.log("Error creating checkout session:", error);
+      return;
+    }
+
     setLoading(false);
     open();
   };

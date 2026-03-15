@@ -173,6 +173,22 @@ const Cart = () => {
     setLoadingProceed(true);
 
     const checkoutUrl = await createCheckoutSession(cartId);
+
+    try {
+      const anyWindow = window as any;
+
+      if (anyWindow.umami) {
+        anyWindow.umami.track("proceed_to_checkout", {
+          cartId: cartId,
+          totalPrice: getTotalPrice(),
+          currency: "GBP",
+        });
+      }
+    } catch (error) {
+      console.log("Error creating checkout session:", error);
+      setLoadingProceed(false);
+      return;
+    }
     window.location.href = checkoutUrl;
 
     setLoadingProceed(false);

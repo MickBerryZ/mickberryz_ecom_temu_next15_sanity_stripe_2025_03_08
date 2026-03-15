@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { umamiTrackCheckoutSuccessEvent } from "@/lib/umami";
 import { apiVersion } from "@/sanity/env";
 import { createClient } from "next-sanity";
 import { headers } from "next/headers";
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
     if (!signature) {
       return NextResponse.json(
         { error: "No signature found" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
         }
 
         try {
-          await sanityClient.create({
+          const order = await sanityClient.create({
             _type: "order",
             orderNumber: session.id.slice(-8).toUpperCase(),
             orderDate: new Date().toISOString(),
@@ -118,6 +119,18 @@ export async function POST(req: Request) {
             })),
             status: "PROCESSING",
           });
+
+          try {
+            await umamiTrackCheckoutSuccessEvent({
+              cartId: cartId,
+              email: order.customerEmail || "-",
+              orderId: order.orderNumber,
+              orderTotal: order.totalPrice,
+              orderCurrency: "GBP",
+            });
+          } catch (error) {
+            console.log("Umami tracking failed:", error);
+          }
         } catch (sanityError) {
           console.error("Failed to create order in Sanity:", sanityError);
           throw sanityError;
@@ -145,7 +158,7 @@ export async function POST(req: Request) {
     // Respond with a 500 status so Stripe retries later
     return NextResponse.json(
       { error: "Webhook handler failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
