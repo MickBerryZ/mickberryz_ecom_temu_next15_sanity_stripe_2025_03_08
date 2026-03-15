@@ -4,7 +4,7 @@ import {
   getCategoryBySlug,
   getProductsByCategorySlug,
   searchProducts,
-} from "@/sanity/lib/client";
+} from "@/sanity/lib/products";
 import React from "react";
 
 type SearchPageProps = {
