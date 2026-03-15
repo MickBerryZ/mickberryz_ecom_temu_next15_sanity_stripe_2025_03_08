@@ -1,7 +1,7 @@
 import SalesCampaignBanner from "@/components/layout/SalesCampaignBanner";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import { formatPrice } from "@/lib/utils";
-import { getProductById } from "@/sanity/lib/client";
+import { getProductById } from "@/sanity/lib/products";
 import { urlFor } from "@/sanity/lib/image";
 import { ChevronRight, Home } from "lucide-react";
 import Image from "next/image";

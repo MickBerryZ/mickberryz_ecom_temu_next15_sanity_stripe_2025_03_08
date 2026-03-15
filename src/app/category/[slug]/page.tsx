@@ -3,7 +3,7 @@ import ProductGrid from "@/components/product/ProductGrid";
 import {
   getCategoryBySlug,
   getProductsByCategorySlug,
-} from "@/sanity/lib/client";
+} from "@/sanity/lib/products";
 import React from "react";
 
 type CategoryPageProps = {

@@ -56,9 +56,18 @@ const CartItem = ({ item }: { item: CartItemType }) => {
         </div>
         <div className="flex items-center gap-3 mt-2">
           {isFreeItem ? (
-            <div className="text-sm text-emerald-600 font-medium">
-              Prize Item
-            </div>
+            <>
+              <div className="text-sm text-emerald-600 font-medium">
+                Prize Item
+              </div>
+              {/* Added the remove button for free items! */}
+              <button
+                onClick={() => removeItem(item.id)}
+                className="text-red-500 text-sm hover:text-red-600 ml-2"
+              >
+                Remove
+              </button>
+            </>
           ) : (
             <>
               <select

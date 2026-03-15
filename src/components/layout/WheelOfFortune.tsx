@@ -123,8 +123,6 @@ const WinningItem = ({
     const currentCartId = cartId || "";
     const updatedCart = await addWinningItemToCart(currentCartId, product);
 
-    localStorage.setItem("has-played-wheel-of-fortune", "true");
-
     setStore(updatedCart);
 
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -199,7 +197,8 @@ const WinningItem = ({
                 {product.title}
               </p>
               {product.description && (
-                <p className="text-sm text-muted-foreground">
+                // Added line-clamp-3 and made the text slightly smaller for mobile
+                <p className="text-sm sm:text-sm text-muted-foreground line-clamp-3 px-2">
                   {product.description}
                 </p>
               )}
@@ -207,11 +206,12 @@ const WinningItem = ({
           </div>
         </div>
 
+        {/* Claim Prize Button */}
         <button
           onClick={handleAddToCart}
           disabled={isAdding}
           className={`
-        mt-5 sm:mt-6 w-full py-3 sm:py-4 px-6 sm:px-8 rounded-full font-bold text-sm sm:text-base
+            mt-5 sm:mt-6 w-full py-3 sm:py-4 px-6 sm:px-8 rounded-full font-bold text-sm sm:text-base
             transition-all duration-300 transform flex items-center justify-center gap-2
             hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
             bg-gradient-to-r from-emerald-500 to-emerald-600 text-white`}
@@ -227,6 +227,16 @@ const WinningItem = ({
               Claim Your Prize!
             </>
           )}
+          {/* ... existing loader and shopping cart icon code ... */}
+        </button>
+
+        {/* 2. Add this "No thanks" button underneath! */}
+        <button
+          onClick={onClose}
+          disabled={isAdding}
+          className="mt-4 w-full text-center text-sm font-medium text-gray-400 hover:text-gray-600 underline decoration-gray-300 hover:decoration-gray-500 transition-colors disabled:opacity-50"
+        >
+          No thanks, I'll pass
         </button>
       </div>
     </div>
@@ -275,6 +285,9 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
     setHasSpun(true);
     setShowWinningItem(false);
 
+    // 1. Tell the browser they played the moment they spin!
+    localStorage.setItem("has-played-wheel-of-fortune", "true");
+
     setWheelStyle({ animation: "none" });
 
     requestAnimationFrame(() => {
@@ -310,7 +323,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
       <DialogTrigger>Open</DialogTrigger>
 
       {/* Added bg-white so the card is solid, not transparent */}
-      <DialogContent className="w-[95vw] sm:max-w-[800px] p-0 h-auto overflow-hidden rounded-2xl bg-white gap-0 border-0 shadow-2xl">
+      <DialogContent className="w-[95vw] sm:max-w-[800px] p-0 h-auto overflow-hidden rounded-2xl bg-white gap-0 border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
         <DialogTitle>
           <div className="p-3 sm:p-4 text-center relative overflow-hidden bg-orange-200 rounded-t-lg">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 animate-pulse" />
@@ -324,10 +337,10 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
           </div>
         </DialogTitle>
 
-        <div className="flex flex-col items-center justify-center px-4 py-8 sm:py-10 gap-8 bg-gray-50 relative">
+        <div className="flex flex-col items-center px-4 py-6 sm:py-10 gap-6 bg-gray-50 relative h-auto">
           <div
             className={`w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] transition-all duration-1000 ease-in-out transform 
-                ${showWinningItem ? "absolute scale-0 opacity-0 rotate-180" : "relative scale-100 opacity-100"}`}
+                ${showWinningItem ? "absolute scale-0 opacity-0 rotate-180 pointer-events-none" : "relative scale-100 opacity-100"}`}
           >
             {/* Red pointer */}
             <div
@@ -341,6 +354,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
             />
 
             {/* Wheel Image */}
+            {/* The swap logic: relative w-full when showing, absolute inset-0... pointer-events-none when hidden */}
             <div
               className={`
                 absolute inset-0 rounded-full overflow-hidden border-8 border-gray-200 
@@ -371,10 +385,15 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
             </div>
           </div>
 
+          {/* Winning Item Container */}
           <div
-            className={`flex items-center justify-center
+            className={`flex items-center justify-center z-50
             transition-all duration-1000 ease-in-out transform
-            ${!showWinningItem ? "absolute inset-0 scale-0 opacity-0 translate-y-full pointer-events-none z-0" : "relative w-full scale-100 opacity-100 translate-y-0 z-50"}`}
+            ${
+              !showWinningItem
+                ? "absolute inset-0 scale-0 opacity-0 translate-y-full pointer-events-none"
+                : "relative w-full scale-100 opacity-100 translate-y-0"
+            }`}
           >
             {hasSpun && !isSpinning && (
               <WinningItem
@@ -383,11 +402,11 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
               />
             )}
           </div>
-
           <button
             onClick={handleSpin}
             disabled={isSpinning || hasSpun}
-            className={`relative px-8 py-4 rounded-full font-bold text-white text-lg transition-all 
+            className={`
+              px-8 py-4 rounded-full font-bold text-white text-lg transition-all 
               bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 
               bg-[length:200%_100%] animate-[gradient-x_2s_linear_infinite] 
               border-4 border-yellow-300
@@ -395,8 +414,8 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
               hover:shadow-[0_0_30px_rgba(234,179,8,0.8)]
               hover:scale-105
               disabled:opacity-50 disabled:cursor-not-allowed 
-              ${showWinningItem ? "opacity-0 scale-0 -translate-y-full" : ""}
               before:absolute before:inset-0 before:bg-white/20 before:animate-[pulse_1s_ease-in-out_infinite] 
+              ${showWinningItem ? "absolute opacity-0 scale-0 pointer-events-none" : "relative"}  
               `}
           >
             {isSpinning ? (

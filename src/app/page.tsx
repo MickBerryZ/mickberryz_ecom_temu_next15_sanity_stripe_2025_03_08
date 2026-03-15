@@ -3,7 +3,7 @@ import { getWheelOfFortuneConfiguration } from "@/actions/wheel-of-fortune-actio
 import SalesCampaignBanner from "@/components/layout/SalesCampaignBanner";
 import WheelOfFortune from "@/components/layout/WheelOfFortune";
 import ProductGrid from "@/components/product/ProductGrid";
-import { getAllProducts } from "@/sanity/lib/client";
+import { getAllProducts } from "@/sanity/lib/products";
 
 const Home = async () => {
   const { user } = await getCurrentSession();
