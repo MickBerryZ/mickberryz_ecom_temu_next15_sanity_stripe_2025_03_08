@@ -2,6 +2,7 @@
 import React, { useActionState } from "react";
 import Form from "next/form";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const initialState = {
   message: "",
@@ -10,7 +11,7 @@ const initialState = {
 type SignInProps = {
   action: (
     prevState: any,
-    formData: FormData
+    formData: FormData,
   ) => Promise<{ message: string } | undefined>;
 };
 
@@ -74,6 +75,13 @@ const SignIn = ({ action }: SignInProps) => {
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-2">
             ⚡ Member save an extra 15% on all orders!
+            <Link
+              href="/auth/sign-up"
+              className="text-rose-600 hover:text-rose-700 font-semibold hover:underline transition-colors"
+            >
+              {/* Like to Sign-Up*/}
+              <span className="text-red-600 font-bold ml-1">🙋‍♂️ Register!</span>
+            </Link>
           </p>
           <p className="text-sm text-gray-500 mb-4">
             ⛵ Plus get free shipping on orders over £15.00
@@ -84,7 +92,7 @@ const SignIn = ({ action }: SignInProps) => {
         <button
           type="submit"
           disabled={isPending}
-          className={`w-full bg-rose-600 text-white py-3 rounded-md hover:bg-rose-700 transition-colors font-medium flex items-center justify-center gap-2 ${
+          className={`w-full bg-indigo-400 text-white py-3 rounded-md hover:bg-indigo-600 transition-colors font-medium flex items-center justify-center gap-2 ${
             isPending ? "cursor-not-allowed" : ""
           }`}
         >

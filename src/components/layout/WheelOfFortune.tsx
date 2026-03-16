@@ -320,7 +320,7 @@ const WheelOfFortune = ({ products, winningIndex }: WheelOfFortuneProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="text-gray-100 hover:text-gray-600">
+      <DialogTrigger className="text-gray-50 hover:text-gray-600">
         Open
       </DialogTrigger>
 
