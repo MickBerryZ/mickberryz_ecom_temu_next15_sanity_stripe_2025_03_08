@@ -31,6 +31,8 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [prevScrollY, setPrevScrollY] = useState<number>(0);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
   const { open, getTotalItems } = useCartStore(
     useShallow((state) => ({
       open: state.open,
@@ -62,7 +64,10 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
   }, [prevScrollY]);
 
   return (
-    <header className="w-full sticky top-0 z-50">
+    <header
+      className="w-full sticky top-0 z-50"
+      onMouseLeave={() => setIsMobileMenuOpen(false)}
+    >
       <div
         className={`w-full transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-y-0" : "-translate-y-full"
@@ -77,7 +82,10 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
             {/* 🟢 LEFT SIDE */}
             {/* <div className="flex items-center gap-4 sm:gap-6 flex-1"> */}
             <div className="flex items-center gap-4 sm:gap-6 flex-1">
-              <button className="text-gray-700 hover:text-gray-900 md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-700 hover:text-gray-900 md:hidden"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 sm:h-6 sm:w-6"
@@ -109,7 +117,7 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
             </Link> */}
             <div className="flex-1 flex justify-center">
               <Link href="/">
-                <span className="text-xl sm:text-2xl font-bold tracking-tight text-gray-800">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight text-gray-800 ">
                   MickBerryZ Shop
                 </span>
               </Link>
@@ -140,13 +148,13 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
                 <React.Fragment>
                   <Link
                     href="/auth/sign-in"
-                    className="px-4 py-2 text-sm font-medium text-gray-700 border border-blue-500 rounded-md hover:bg-blue-500 hover:text-black transition-colors"
+                    className="px-4 py-2 text-sm sm:text-sm font-medium text-gray-700 border border-blue-500 rounded-md hover:bg-blue-500 hover:text-black transition-colors whitespace-nowrap flex-shrink-0"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/sign-up"
-                    className="hidden sm:block px-4 py-2 text-sm font-medium text-white bg-rose-500 border border-rose-600 rounded-md hover:bg-rose-700 transition-colors"
+                    className="hidden sm:block px-4 py-2 text-sm font-medium text-white bg-rose-500 border border-rose-600 rounded-md hover:bg-rose-700 transition-colors whitespace-nowrap flex-shrink-0"
                   >
                     Sign Up
                   </Link>
@@ -178,6 +186,20 @@ const Header = ({ user, categorySelector }: HeaderProps) => {
             </div>
           </div>
         </div>
+
+        {/* 🟢 MOBILE MENU DROPDOWN */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg py-4 px-6 flex flex-col gap-4 z-50">
+            {categorySelector}
+            <Link
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-black"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Sale
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );
