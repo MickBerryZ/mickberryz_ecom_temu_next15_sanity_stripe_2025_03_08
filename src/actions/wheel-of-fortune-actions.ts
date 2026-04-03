@@ -4,10 +4,9 @@ import { Product } from "@/sanity.types";
 // import { createClient } from "next-sanity";
 import { client } from "@/sanity/lib/client";
 
-const getWeightedWinningIndex = (products: Product[]) => {
+const getWeightedWinningIndex = () => {
   const rand = Math.random() * 100;
 
-  // 1. Roll the dice to see what they theoretically won
   if (rand <= 1) {
     return 0; // 1% chance - Grand Prize (Most Expensive)
   } else if (rand <= 4) {
@@ -30,20 +29,16 @@ export const getWheelOfFortuneConfiguration = async () => {
     const query = `*[_type == "product"][0...7]`;
     let randomProducts: Product[] = await client.fetch(query);
 
-    // Safety check: if we don't have enough products, just return safely
     if (!randomProducts || randomProducts.length === 0) {
       return { randomProducts: [], winningIndex: 0 };
     }
 
-    // 2. Sort by price descending (Highest price = index 0)
     randomProducts = randomProducts.sort(
       (a, b) => (b.price || 0) - (a.price || 0),
     );
 
-    // 3. Calculate the winning index based on our math
-    const winningIndex = getWeightedWinningIndex(randomProducts);
+    const winningIndex = getWeightedWinningIndex();
 
-    // 4. Return the configuration to the frontend
     return {
       randomProducts,
       winningIndex,

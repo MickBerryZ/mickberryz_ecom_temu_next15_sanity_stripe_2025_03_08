@@ -22,13 +22,13 @@ export const projectId =
   process.env.SANITY_STUDIO_PROJECT_ID ||
   "Missing environment variable: NEXT_PUBLIC_SANITY_PROJECT_ID";
 
-function assertValue<T>(v: T | undefined, errorMessage: string): T {
-  if (v === undefined) {
-    throw new Error(errorMessage);
-  }
+// function assertValue<T>(v: T | undefined, errorMessage: string): T {
+//   if (v === undefined) {
+//     throw new Error(errorMessage);
+//   }
 
-  return v;
-}
+//   return v;
+// }
 
 console.log(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
 console.log(process.env.NEXT_PUBLIC_SANITY_DATASET);

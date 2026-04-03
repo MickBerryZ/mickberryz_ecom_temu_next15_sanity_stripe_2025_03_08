@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     // Add this to stop Next.js from blocking the Sanity CDN locally
     dangerouslyAllowLocalIP: true,
+    unoptimized: true, // Disable Next.js's built-in image optimization to allow all external images without issues
   },
 };
 export default nextConfig;
